@@ -10,7 +10,6 @@ conda activate env_cifa10
 git clone git@github.com:morrisfl/cifar10-classification.git
 ```
 #### Install Pytorch
-#### Install pytorch
 Depending on your system and compute requirements, you may need to change the command below. See [pytorch.org](https://pytorch.org/get-started/locally/) for more details.
 ```
 conda install pytorch torchvision pytorch-cuda=11.7 -c pytorch -c nvidia
@@ -25,5 +24,4 @@ If you want to make changes to the code, you can install the repository in edita
 python -m pip install -e .
 ```
 ## Download the CIFA10 Dataset
-When you are in the environment navigate to the project root folder. Inside the project root folder run:
-```
+
