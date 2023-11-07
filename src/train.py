@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 
-def train_one_epoch(model, data_loader, criterion, optimizer, device):
+def train_one_epoch(model, data_loader, criterion, optimizer, device, curr_epoch, epochs):
     """
     Trains a given model for one epoch using the provided data loader, criterion, and optimizer.
 
@@ -20,9 +20,9 @@ def train_one_epoch(model, data_loader, criterion, optimizer, device):
     """
     total_loss = 0.0
     num_batches = 0
-    loop = tqdm(data_loader)
+    print(f"--------------------------Training epoch {curr_epoch}/{epochs}--------------------------")
 
-    for data in loop:
+    for data in tqdm(data_loader, desc=f"Train epoch {curr_epoch}/{epochs}"):
         img, label = data
         img, label = img.to(device), label.to(device)
         optimizer.zero_grad()
@@ -32,9 +32,11 @@ def train_one_epoch(model, data_loader, criterion, optimizer, device):
         optimizer.step()
         total_loss += loss.item()
         num_batches += 1
-        loop.set_description(f"Batch no: {num_batches}")
 
-    return total_loss / num_batches
+    avg_loss = total_loss / num_batches
+    tqdm.write(f"Train loss: {avg_loss:.4f}")
+
+    return avg_loss
 
 
 def evaluate_one_epoch(model, data_loader, criterion, device):
@@ -58,7 +60,7 @@ def evaluate_one_epoch(model, data_loader, criterion, device):
 
     model.eval()
     with torch.no_grad():
-        for data in data_loader:
+        for data in tqdm(data_loader, desc="Evaluating"):
             img, label = data
             img, label = img.to(device), label.to(device)
             output = model(img)
@@ -97,7 +99,7 @@ def train_and_evaluate_model(model, train_loader, test_loader, criterion, optimi
     avg_test_accuracies = []
     for i in range(num_epochs):
         model.train()
-        avg_train_losses.append(train_one_epoch(model, train_loader, criterion, optimizer, device))
+        avg_train_losses.append(train_one_epoch(model, train_loader, criterion, optimizer, device, i + 1, num_epochs))
         avg_test_loss, avg_test_accuracy = evaluate_one_epoch(model, test_loader, criterion, device)
         avg_test_losses.append(avg_test_loss)
         avg_test_accuracies.append(avg_test_accuracy)

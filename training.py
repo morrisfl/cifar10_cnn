@@ -27,18 +27,19 @@ if __name__ == "__main__":
     ])
 
     train_set = CustomCIFAR10Dataset(root="data/cifar10", train=True, transform=train_transform)
+    img, label = train_set[49999]
     test_set = CustomCIFAR10Dataset(root="data/cifar10", train=False, transform=test_transform)
 
-    train_loader = DataLoader(train_set, batch_size=8, shuffle=True)
-    test_loader = DataLoader(test_set, batch_size=8, shuffle=False)
+    train_loader = DataLoader(train_set, batch_size=16, shuffle=True)
+    test_loader = DataLoader(test_set, batch_size=16, shuffle=False)
 
     model = SimpleConvNet(classes=10)
     model.to(device)
 
-    num_epochs = 2
+    num_epochs = 5
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
     train_loss, test_loss, test_accuracy = train_and_evaluate_model(model, train_loader, test_loader, criterion,
                                                                     optimizer, num_epochs, device)
