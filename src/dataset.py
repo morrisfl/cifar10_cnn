@@ -6,15 +6,20 @@ from torch.utils.data import Dataset
 
 class CustomCIFAR10Dataset(Dataset):
     def __init__(self, root, train=True, transform=None):
-        self.img_dir = root
-        self.transform = transform
-        self.classes = os.listdir(root)
-        self.class_to_idx = {self.classes[i]: i for i in range(len(self.classes))}
-        self.samples = []
+        if train:
+            self.img_dir = os.path.join(root, "train")
+        else:
+            self.img_dir = os.path.join(root, "test")
 
+        self.classes = os.listdir(self.img_dir)
+        self.class_to_idx = {self.classes[i]: i for i in range(len(self.classes))}
+
+        self.samples = []
         for name in self.classes:
-            for file in os.listdir(os.path.join(root, name)):
-                self.samples.append((os.path.join(root, name, file), self.class_to_idx[name]))
+            for file in os.listdir(os.path.join(self.img_dir, name)):
+                self.samples.append((os.path.join(self.img_dir, name, file), self.class_to_idx[name]))
+
+        self.transform = transform
 
     def __getitem__(self, idx):
         img_path, label = self.samples[idx]

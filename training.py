@@ -8,7 +8,8 @@ from src.model import SimpleConvNet
 from src.train import train_and_evaluate_model
 from src.utils import plot_losses, plot_accuracies
 
-if __name__ == "_main__":
+
+if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Device: {device}")
 
@@ -25,16 +26,16 @@ if __name__ == "_main__":
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
 
-    train_set = CustomCIFAR10Dataset(root="data", train=True, transform=train_transform)
-    test_set = CustomCIFAR10Dataset(root="data", train=False, transform=test_transform)
+    train_set = CustomCIFAR10Dataset(root="data/cifar10", train=True, transform=train_transform)
+    test_set = CustomCIFAR10Dataset(root="data/cifar10", train=False, transform=test_transform)
 
-    train_loader = DataLoader(train_set, batch_size=32, shuffle=True)
-    test_loader = DataLoader(test_set, batch_size=32, shuffle=False)
+    train_loader = DataLoader(train_set, batch_size=8, shuffle=True)
+    test_loader = DataLoader(test_set, batch_size=8, shuffle=False)
 
     model = SimpleConvNet(classes=10)
     model.to(device)
 
-    num_epochs = 10
+    num_epochs = 2
 
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
